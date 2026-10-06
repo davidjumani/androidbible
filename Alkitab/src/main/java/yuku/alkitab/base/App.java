@@ -14,6 +14,7 @@ import yuku.alkitab.base.connection.Connections;
 import yuku.alkitab.base.connection.PRDownloaderOkHttpClient;
 import yuku.alkitab.base.sync.Fcm;
 import yuku.alkitab.base.sync.Sync;
+import yuku.alkitab.base.util.BundledFonts;
 import yuku.alkitab.base.util.ExtensionManager;
 import yuku.alkitab.debug.BuildConfig;
 import yuku.alkitab.debug.R;
@@ -62,6 +63,8 @@ public class App extends yuku.afw.App {
         { // FCM
             Fcm.renewFcmRegistrationIdIfNeeded(Sync::notifyNewFcmRegistrationId);
         }
+
+        BundledFonts.installInBackground();
 
         PRDownloader.initialize(context, new PRDownloaderConfig.Builder()
             .setHttpClient(new PRDownloaderOkHttpClient(Connections.getOkHttp()))
