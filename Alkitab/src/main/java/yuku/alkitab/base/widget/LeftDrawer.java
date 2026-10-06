@@ -41,6 +41,7 @@ import yuku.alkitab.base.config.AppConfig;
 import yuku.alkitab.base.settings.SettingsActivity;
 import yuku.alkitab.base.storage.Prefkey;
 import yuku.alkitab.base.util.CurrentReading;
+import yuku.alkitab.books.BookReaderActivity;
 import yuku.alkitab.debug.R;
 import yuku.alkitab.songs.SongBookUtil;
 import yuku.alkitab.songs.SongViewActivity;
@@ -80,6 +81,8 @@ public abstract class LeftDrawer extends NestedScrollView {
 		bDevotion = findViewById(R.id.bDevotion);
 		bReadingPlan = findViewById(R.id.bReadingPlan);
 		bSongs = findViewById(R.id.bSongs);
+		final TextView bBooks = findViewById(R.id.bBooks);
+		bBooksCurrent = findViewById(R.id.bBooksCurrent);
 		bSettings = findViewById(R.id.bSettings);
 		bHelp = findViewById(R.id.bHelp);
 
@@ -87,6 +90,7 @@ public abstract class LeftDrawer extends NestedScrollView {
 		if (this instanceof Devotion) setDrawerItemSelected(bDevotion);
 		if (this instanceof ReadingPlan) setDrawerItemSelected(bReadingPlan);
 		if (this instanceof Songs) setDrawerItemSelected(bSongs);
+		if (this instanceof Books) setDrawerItemSelected(bBooks);
 
 		// hide and show according to app config
 		if (!isInEditMode()) {
@@ -114,6 +118,23 @@ public abstract class LeftDrawer extends NestedScrollView {
 			closeDrawer();
 		});
 
+		bBooks.setOnClickListener(v -> {
+			bBooks_click();
+			closeDrawer();
+		});
+
+		bBooksCurrent.setOnClickListener(v -> {
+			bBooks_click();
+			closeDrawer();
+		});
+
+		findViewById(R.id.bBooksChoose).setOnClickListener(v -> {
+			openBooks(BookReaderActivity.ACTION_choose);
+			closeDrawer();
+		});
+
+		refreshBooksItems();
+
 		bSettings.setOnClickListener(v -> {
 			bSettings_click();
 			closeDrawer();
@@ -123,6 +144,37 @@ public abstract class LeftDrawer extends NestedScrollView {
 			bHelp_click();
 			closeDrawer();
 		});
+	}
+
+	TextView bBooksCurrent;
+
+	/** The book being read shows only once a book has been read. */
+	void refreshBooksItems() {
+		if (isInEditMode()) return;
+		final String title = BookReaderActivity.lastBookTitle();
+		bBooksCurrent.setVisibility(title == null ? GONE : VISIBLE);
+		bBooksCurrent.setText(title);
+	}
+
+	// DrawerLayout shows a closed drawer as INVISIBLE, so this runs each time it opens.
+	@Override
+	protected void onVisibilityChanged(@NonNull final View changedView, final int visibility) {
+		super.onVisibilityChanged(changedView, visibility);
+		if (visibility == VISIBLE && bBooksCurrent != null) refreshBooksItems();
+	}
+
+	/** Runs a book reader action, in the open reader if this is it, or by opening the reader. */
+	void openBooks(@NonNull final String action) {
+		if (activity instanceof BookReaderActivity) {
+			((BookReaderActivity) activity).runAction(action);
+		} else if (getContext() instanceof IsiActivity) {
+			activity.startActivity(BookReaderActivity.createIntent(action));
+		} else {
+			final Intent baseIntent = IsiActivity.createIntent();
+			baseIntent.addFlags(Intent.FLAG_ACTIVITY_CLEAR_TASK);
+			baseIntent.addFlags(Intent.FLAG_ACTIVITY_NEW_TASK);
+			activity.startActivities(new Intent[]{baseIntent, BookReaderActivity.createIntent(action)});
+		}
 	}
 
 	void setDrawerItemSelected(@NonNull TextView drawerItem) {
@@ -175,6 +227,20 @@ public abstract class LeftDrawer extends NestedScrollView {
 			baseIntent.addFlags(Intent.FLAG_ACTIVITY_NEW_TASK);
 			final Intent intent = ReadingPlanActivity.createIntent();
 			activity.startActivities(new Intent[]{baseIntent, intent});
+		}
+	}
+
+	/**
+	 * Like {@link #bSongs_click()}, for {@link BookReaderActivity}, which reopens the last book.
+	 */
+	void bBooks_click() {
+		if (getContext() instanceof IsiActivity) {
+			activity.startActivity(BookReaderActivity.createIntent());
+		} else {
+			final Intent baseIntent = IsiActivity.createIntent();
+			baseIntent.addFlags(Intent.FLAG_ACTIVITY_CLEAR_TASK);
+			baseIntent.addFlags(Intent.FLAG_ACTIVITY_NEW_TASK);
+			activity.startActivities(new Intent[]{baseIntent, BookReaderActivity.createIntent()});
 		}
 	}
 
@@ -624,6 +690,45 @@ public abstract class LeftDrawer extends NestedScrollView {
 
 		@Override
 		void bReadingPlan_click() {
+			closeDrawer();
+		}
+
+		public <T extends Activity & Listener> void configure(T listener, DrawerLayout drawerLayout) {
+			this.listener = listener;
+			this.drawerLayout = drawerLayout;
+		}
+	}
+
+	public static class Books extends LeftDrawer {
+		public interface Listener {
+			void bDisplay_click();
+
+			void cNightMode_checkedChange(boolean isChecked);
+		}
+
+		Listener listener;
+		SwitchCompat cNightMode;
+
+		public Books(final Context context, final AttributeSet attrs) {
+			super(context, attrs);
+		}
+
+		@Override
+		protected void onFinishInflate() {
+			super.onFinishInflate();
+
+			cNightMode = findViewById(R.id.cNightMode);
+			cNightMode.setChecked(!isInEditMode() && Preferences.getBoolean(Prefkey.is_night_mode, false));
+			cNightMode.setOnCheckedChangeListener((buttonView, isChecked) -> listener.cNightMode_checkedChange(isChecked));
+
+			findViewById(R.id.bDisplay).setOnClickListener(v -> {
+				listener.bDisplay_click();
+				closeDrawer();
+			});
+		}
+
+		@Override
+		void bBooks_click() {
 			closeDrawer();
 		}
 

@@ -59,6 +59,13 @@
 			android:label="@string/pengaturan_alkitab" />
 		<activity android:name="yuku.alkitab.base.ac.ColorSettingsActivity" />
 		<activity
+			android:name="yuku.alkitab.books.BooksActivity"
+			android:parentActivityName="yuku.alkitab.base.IsiActivity" />
+		<activity
+			android:name="yuku.alkitab.books.BookReaderActivity"
+			android:configChanges="orientation|screenSize|screenLayout|keyboardHidden"
+			android:parentActivityName="yuku.alkitab.books.BooksActivity" />
+		<activity
 			android:name="yuku.alkitab.base.ac.MarkersActivity"
 			android:label="@string/activity_title_markers" />
 		<activity

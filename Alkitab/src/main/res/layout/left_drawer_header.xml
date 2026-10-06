@@ -62,4 +62,45 @@
 		android:textColor="?android:textColorPrimary"
 		android:textSize="16sp" />
 
+	<TextView
+		android:id="@+id/bBooks"
+		style="?buttonBarButtonStyle"
+		android:layout_width="match_parent"
+		android:layout_height="wrap_content"
+		android:drawablePadding="16dp"
+		android:drawableStart="@drawable/ic_drawer_books"
+		android:gravity="start|center_vertical"
+		android:text="@string/books_menu"
+		android:textAppearance="?android:attr/textAppearanceMedium"
+		android:textColor="?android:textColorPrimary"
+		android:textSize="16sp" />
+
+	<TextView
+		android:id="@+id/bBooksCurrent"
+		android:layout_width="match_parent"
+		android:layout_height="wrap_content"
+		android:background="?android:attr/selectableItemBackground"
+		android:ellipsize="end"
+		android:gravity="start|center_vertical"
+		android:maxLines="2"
+		android:minHeight="40dp"
+		android:paddingStart="60dp"
+		android:paddingEnd="16dp"
+		android:textColor="?android:textColorSecondary"
+		android:textSize="14sp"
+		android:visibility="gone" />
+
+	<TextView
+		android:id="@+id/bBooksChoose"
+		android:layout_width="match_parent"
+		android:layout_height="wrap_content"
+		android:background="?android:attr/selectableItemBackground"
+		android:gravity="start|center_vertical"
+		android:minHeight="40dp"
+		android:paddingStart="60dp"
+		android:paddingEnd="16dp"
+		android:text="@string/books_choose_book"
+		android:textColor="?android:textColorSecondary"
+		android:textSize="14sp" />
+
 </LinearLayout>

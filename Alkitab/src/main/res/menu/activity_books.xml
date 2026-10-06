@@ -1,0 +1,28 @@
+<?xml version="1.0" encoding="utf-8"?>
+<menu xmlns:android="http://schemas.android.com/apk/res/android"
+	xmlns:app="http://schemas.android.com/apk/res-auto">
+	<item
+		android:id="@+id/menuSearch"
+		android:icon="@drawable/ic_menu_search"
+		android:title="@string/books_search"
+		app:actionViewClass="androidx.appcompat.widget.SearchView"
+		app:showAsAction="always|collapseActionView" />
+	<item
+		android:id="@+id/menuDownloadedOnly"
+		android:checkable="true"
+		android:title="@string/books_downloaded_only"
+		app:showAsAction="never" />
+	<item
+		android:id="@+id/menuVerifiedOnly"
+		android:checkable="true"
+		android:title="@string/books_verified_only"
+		app:showAsAction="never" />
+	<item
+		android:id="@+id/menuRefresh"
+		android:title="@string/books_refresh"
+		app:showAsAction="never" />
+	<item
+		android:id="@+id/menuSiteAddress"
+		android:title="@string/books_site_address"
+		app:showAsAction="never" />
+</menu>

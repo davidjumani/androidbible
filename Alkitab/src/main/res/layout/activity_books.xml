@@ -1,0 +1,38 @@
+<?xml version="1.0" encoding="utf-8"?>
+<LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
+	xmlns:app="http://schemas.android.com/apk/res-auto"
+	android:layout_width="match_parent"
+	android:layout_height="match_parent"
+	android:orientation="vertical">
+
+	<androidx.appcompat.widget.Toolbar
+		android:id="@+id/toolbar"
+		android:layout_width="match_parent"
+		android:layout_height="?actionBarSize"
+		android:background="?attr/colorPrimary" />
+
+	<ProgressBar
+		android:id="@+id/progress"
+		style="?android:attr/progressBarStyleHorizontal"
+		android:layout_width="match_parent"
+		android:layout_height="4dp"
+		android:indeterminate="true"
+		android:visibility="gone" />
+
+	<TextView
+		android:id="@+id/tStatus"
+		android:layout_width="match_parent"
+		android:layout_height="wrap_content"
+		android:padding="12dp"
+		android:textSize="14sp"
+		android:visibility="gone" />
+
+	<androidx.recyclerview.widget.RecyclerView
+		android:id="@+id/lsBooks"
+		android:layout_width="match_parent"
+		android:layout_height="match_parent"
+		android:clipToPadding="false"
+		android:paddingBottom="16dp"
+		app:layoutManager="androidx.recyclerview.widget.LinearLayoutManager" />
+
+</LinearLayout>

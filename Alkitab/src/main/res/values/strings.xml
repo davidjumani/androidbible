@@ -573,4 +573,31 @@
 	<string name="notification_channel_download_mapper_name">Downloads</string>
 	<string name="notification_channel_devotion_downloader_name">Devotion downloads</string>
 
+    <string name="books_menu">Books</string>
+    <string name="books_search">Search books</string>
+    <string name="books_downloaded_only">Downloaded only</string>
+    <string name="books_verified_only">Verified only</string>
+    <string name="books_refresh">Refresh</string>
+    <string name="books_site_address">Site address</string>
+    <string name="books_site_address_hint">Leave empty for ^1</string>
+    <string name="books_contents">Contents</string>
+    <string name="books_choose_book">Choose book…</string>
+    <string name="books_find">Find in book</string>
+    <string name="books_find_hint">Find in book</string>
+    <string name="books_find_prev">Previous match</string>
+    <string name="books_find_next">Next match</string>
+    <string name="books_find_close">Close find</string>
+    <string name="books_find_count">%1$d/%2$d</string>
+    <string name="books_minutes">~%d min</string>
+    <string name="books_hours">~%1$d h %2$d min</string>
+    <string name="books_other_author">Other</string>
+    <string name="books_offline">Could not reach the library, showing the last saved list. (%s)</string>
+    <string name="books_unreachable">Could not reach the library at %1$s. (%2$s)</string>
+    <string name="books_empty">No matching books.</string>
+    <string name="books_download_failed">Could not download \"%1$s\". (%2$s)</string>
+    <string name="books_delete_title">Remove download?</string>
+    <string name="books_delete_message">\"%s\" will be removed from this device. You can download it again any time.</string>
+    <string name="books_delete">Remove</string>
+    <string name="books_too_large">This book is too large to display on this device.</string>
+    <string name="books_not_downloaded">This book is not downloaded yet.</string>
 </resources>

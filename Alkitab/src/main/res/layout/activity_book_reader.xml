@@ -1,0 +1,41 @@
+<?xml version="1.0" encoding="utf-8"?>
+<androidx.drawerlayout.widget.DrawerLayout android:id="@+id/drawerLayout"
+	xmlns:android="http://schemas.android.com/apk/res/android"
+	android:layout_width="match_parent"
+	android:layout_height="match_parent">
+
+	<LinearLayout
+		android:layout_width="match_parent"
+		android:layout_height="match_parent"
+		android:orientation="vertical">
+
+		<androidx.appcompat.widget.Toolbar
+			android:id="@+id/toolbar"
+			android:layout_width="match_parent"
+			android:layout_height="?actionBarSize"
+			android:background="?attr/colorPrimary" />
+
+		<FrameLayout
+			android:id="@+id/overlayContainer"
+			android:layout_width="match_parent"
+			android:layout_height="match_parent">
+
+			<FrameLayout
+				android:id="@+id/webViewHolder"
+				android:layout_width="match_parent"
+				android:layout_height="match_parent" />
+
+			<TextView
+				android:id="@+id/tMessage"
+				android:layout_width="match_parent"
+				android:layout_height="wrap_content"
+				android:layout_gravity="center"
+				android:gravity="center"
+				android:padding="24dp"
+				android:textSize="16sp"
+				android:visibility="gone" />
+		</FrameLayout>
+	</LinearLayout>
+
+	<include layout="@layout/left_drawer_books" />
+</androidx.drawerlayout.widget.DrawerLayout>
