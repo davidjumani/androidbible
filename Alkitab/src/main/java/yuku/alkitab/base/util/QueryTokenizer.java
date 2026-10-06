@@ -32,9 +32,17 @@ public class QueryTokenizer {
 	 */
 	@NonNull
 	public static String[] tokenize(String query) {
+		return tokenize(query, true);
+	}
+
+	/**
+	 * @param lowercase false keeps capitals, for case-sensitive search.
+	 */
+	@NonNull
+	public static String[] tokenize(String query, boolean lowercase) {
 		final List<String> raw_tokens = new ArrayList<>();
 
-		final Matcher matcher = QueryTokenizer.oneToken.matcher(query.toLowerCase(Locale.getDefault()));
+		final Matcher matcher = QueryTokenizer.oneToken.matcher(lowercase ? query.toLowerCase(Locale.getDefault()) : query);
 		while (matcher.find()) {
 			raw_tokens.add(matcher.group(1) + matcher.group(2));
 		}
@@ -112,6 +120,17 @@ public class QueryTokenizer {
 	 *
 	 * @return null if the token is not a multiword token (i.e. not an array with 1 element!).
 	 */
+	/** Like {@link #tokenizeMultiwordToken(String)}, but never null. */
+	@NonNull
+	static List<String> splitWords(String token) {
+		final List<String> res = new ArrayList<>();
+		final Matcher m = pattern_letters.matcher(token);
+		while (m.find()) {
+			res.add(m.group());
+		}
+		return res;
+	}
+
 	@Nullable
 	static String[] tokenizeMultiwordToken(String token) {
 		List<String> res = null;

@@ -47,9 +47,9 @@ import yuku.alkitab.base.util.ClipboardUtil
 import yuku.alkitab.base.util.Debouncer
 import yuku.alkitab.base.util.FormattedVerseText
 import yuku.alkitab.base.util.Jumper
-import yuku.alkitab.base.util.QueryTokenizer
 import yuku.alkitab.base.util.SearchEngine
 import yuku.alkitab.base.util.SearchEngineQuery
+import yuku.alkitab.base.util.SearchOptions
 import yuku.alkitab.base.util.TextColorUtil
 import yuku.alkitab.debug.R
 import yuku.alkitab.model.Version
@@ -78,12 +78,15 @@ class SearchActivity : BaseActivity() {
     private lateinit var cFilterSingleBook: CheckBox
     private lateinit var tFilterAdvanced: TextView
     private lateinit var bEditFilter: View
+    private lateinit var cExactPhrase: CheckBox
+    private lateinit var cWholeWords: CheckBox
+    private lateinit var cMatchCapitals: CheckBox
 
     private var hiliteColor = 0
     private var selectedBookIds = SparseBooleanArray()
     private var openedBookId = 0
     private var filterUserAction = 0 // when it's not user action, set to nonzero
-    private val adapter = SearchAdapter(IntArrayList(), emptyList())
+    private val adapter = SearchAdapter(IntArrayList(), SearchEngine.ReadyTokens(emptyArray()))
 
     private var searchInVersion: Version = S.activeVersion()
     private var searchInVersionId: String = S.activeVersionId()
@@ -231,6 +234,9 @@ class SearchActivity : BaseActivity() {
         cFilterSingleBook = findViewById(R.id.cFilterSingleBook)
         tFilterAdvanced = findViewById(R.id.tFilterAdvanced)
         bEditFilter = findViewById(R.id.bEditFilter)
+        cExactPhrase = findViewById(R.id.cExactPhrase)
+        cWholeWords = findViewById(R.id.cWholeWords)
+        cMatchCapitals = findViewById(R.id.cMatchCapitals)
 
         setSupportActionBar(findViewById(R.id.toolbar))
         supportActionBar?.setDisplayHomeAsUpEnabled(true)
@@ -303,6 +309,18 @@ class SearchActivity : BaseActivity() {
         cFilterOlds.setOnCheckedChangeListener(cFilterOlds_checkedChange)
         cFilterNews.setOnCheckedChangeListener(cFilterNews_checkedChange)
         cFilterSingleBook.setOnCheckedChangeListener(cFilterSingleBook_checkedChange)
+
+        for ((checkBox, prefkey) in listOf(
+            cExactPhrase to Prefkey.search_exact_phrase,
+            cWholeWords to Prefkey.search_whole_words,
+            cMatchCapitals to Prefkey.search_match_capitals,
+        )) {
+            checkBox.isChecked = Preferences.getBoolean(prefkey, false)
+            checkBox.setOnCheckedChangeListener { _, isChecked ->
+                Preferences.setBoolean(prefkey, isChecked)
+                search(searchView.query.toString())
+            }
+        }
 
         run {
             openedBookId = intent.getIntExtra(EXTRA_openedBookId, -1)
@@ -586,9 +604,8 @@ class SearchActivity : BaseActivity() {
             bSearch.isVisible = true
             actionMode?.finish()
 
-            val tokens = QueryTokenizer.tokenize(query.query_string).toList()
             adapter.uncheckAll()
-            adapter.setData(result, tokens)
+            adapter.setData(result, SearchEngine.ReadyTokens.forQuery(query.query_string, query.options))
 
             tSearchTips.isVisible = result.size() == 0
             lsSearchResults.isVisible = result.size() > 0
@@ -658,6 +675,11 @@ class SearchActivity : BaseActivity() {
         val query = SearchEngineQuery()
         query.query_string = query_string
         query.bookIds = selectedBookIds
+        query.options = SearchOptions(
+            exactPhrase = cExactPhrase.isChecked,
+            wholeWords = cWholeWords.isChecked,
+            matchCapitals = cMatchCapitals.isChecked,
+        )
 
         progressbar.isVisible = true
         bSearch.isVisible = false
@@ -706,12 +728,11 @@ class SearchActivity : BaseActivity() {
         val lSnippet: TextView = itemView.findViewById(R.id.lSnippet)
     }
 
-    inner class SearchAdapter(val searchResults: IntArrayList, tokens: List<String>) : RecyclerView.Adapter<ResultHolder>() {
+    inner class SearchAdapter(val searchResults: IntArrayList, var rt: SearchEngine.ReadyTokens) : RecyclerView.Adapter<ResultHolder>() {
         init {
             setHasStableIds(true)
         }
 
-        var rt = SearchEngine.ReadyTokens(tokens.toTypedArray())
         val checkedPositions = mutableSetOf<Int>()
 
         override fun getItemCount(): Int {
@@ -812,13 +833,13 @@ class SearchActivity : BaseActivity() {
             onCheckedVerseChanged()
         }
 
-        fun setData(searchResults: IntArrayList, tokens: List<String>) {
+        fun setData(searchResults: IntArrayList, rt: SearchEngine.ReadyTokens) {
             this.searchResults.clear()
             for (i in 0 until searchResults.size()) {
                 this.searchResults.add(searchResults[i])
             }
 
-            this.rt = SearchEngine.ReadyTokens(tokens.toTypedArray())
+            this.rt = rt
             uncheckAll()
         }
     }
